@@ -64,8 +64,6 @@ end
 
 ## Known Limitations and Issues
 
-* The find_ methods does not supports order, limit and offset options. Her ORM limitation.
-* Her ORM does not supports save method with arguments, but Devise has save(validate: false). This is why there is SaveFix module. Remove it if any related gems will fix the issues.
 * There is no unit test. Fill free to add it.
 
 ## Acknowledge
