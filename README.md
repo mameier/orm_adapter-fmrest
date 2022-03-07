@@ -63,6 +63,19 @@ class User < FmRest::Layout
 end
 ```
 
+#### Date/Time coerce
+
+as Devise uses time calculation, FileMaker Date/Time fields must be converted from the internal string representation to Date/Time classes.  
+`fmrest` needs to be configured to do so, see [DateFields](https://github.com/beezwax/fmrest-ruby/blob/master/docs/DateFields.md) in the fmrest documentation.
+
+Set either in `FmRest.default_connection_settings` or in the model's `fmrest_config`
+
+    coerce_dates: true
+
+or
+
+    coerce_dates: :full
+
 ## Known Limitations and Issues
 
 * There is no unit test. Fill free to add it.
