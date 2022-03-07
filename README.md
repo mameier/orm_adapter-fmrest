@@ -48,7 +48,6 @@ gem 'devise'
 And then configure Devise using "--orm fmrest" parameter:
 
     $ rails generate devise:install --orm fmrest
-    $ rails generate devise User --orm fmrest
 
 After that you can create User model:
 
@@ -56,8 +55,10 @@ After that you can create User model:
 class User < FmRest::Layout
   layout('your_user_layout')
   extend Devise::Models
-  devise :database_authenticatable, :rememberable, :trackable
+  include ActiveModel::Validations
+  include ActiveModel::Validations::Callbacks
 
+  devise :database_authenticatable, :rememberable, :trackable
 
 end
 ```

@@ -8,6 +8,15 @@ module FmRest
     class Base
       extend OrmAdapter::ToAdapter
 
+      # for device models define all unmapped columns in column map so they can be accessed
+      def initialize(attributes = nil)
+        super
+        return unless self.class.respond_to? :authentication_keys
+
+        base_columns = self.class.to_adapter.column_names - mapped_attributes.keys
+        self.class.attributes(base_columns.to_h {|col| [col, col]})
+      end
+
       class OrmAdapter < ::OrmAdapter::Base
 
         # Get a list of the attribute names (field names) in the Filemaker Layout.
@@ -88,8 +97,9 @@ module FmRest
         def base_relation(options)
           conditions, order, limit, offset = extract_conditions!(options)
 
-          relation = klass.query(exact_conditions(conditions))
-          relation = relation.sort(*order_clause(order)) if order.any?
+          relation = klass
+          relation = klass.query(exact_conditions(conditions.stringify_keys)) if conditions.present?
+          relation = relation.sort(*order_clause(order)) if order.present?
           relation = relation.limit(limit) if limit
           relation = relation.offset(offset) if offset
 
@@ -97,7 +107,7 @@ module FmRest
         end
 
         def exact_conditions(conditions)
-          conditions.transform_values { |v| v.is_a?(String) ? "==#{v}" : v }
+          conditions.transform_values { |v| v.is_a?(String) && !v.match?(/^[<=>]/) ? "==#{v}" : v }
         end
 
         def order_clause(order)
@@ -106,6 +116,8 @@ module FmRest
 
         # given an order argument, returns an array of attributes (symbols) postfixed with __desc if order is reversed
         def normalize_order(order)
+          return if order.blank?
+
           if order.is_a? Array
             order = [order] unless order.first.is_a?(Array)
             order.map { |key, dir| (dir.to_s.downcase == 'desc' ? "key__desc" : key).to_sym }
