@@ -49,6 +49,8 @@ And then configure Devise using "--orm fmrest" parameter:
 
     $ rails generate devise:install --orm fmrest
 
+or require 'devise/orm/fmrest' in your config/initializers/devise.rb manually.
+
 After that you can create User model:
 
 ```ruby
