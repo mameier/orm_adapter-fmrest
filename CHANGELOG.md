@@ -1,5 +1,9 @@
 ## CANGELOG
 
+### 0.1.2
+
+* rails 7 (relax dependency)
+
 ### 0.1.1
 
 * fix find_first without condition
